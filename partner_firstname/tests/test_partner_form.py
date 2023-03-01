@@ -134,18 +134,3 @@ class PartnerContactCase(TestFormCreate):
             partner_form.property_account_payable_id = property_account_payable_id
             partner_form.property_account_receivable_id = property_account_receivable_id
         partner_form.save()
-
-    def test_create_res_users(self):
-        firstname = "Fïrst"
-        lastname = "Läst"
-        
-        user_form = Form(self.env['res.users'])
-        user_form.login = 'a user login'
-
-        # Changes firstname, which triggers compute
-        user_form.firstname = firstname
-
-        # Changes lastname, which triggers compute
-        user_form.lastname = lastname
-
-        user_form.save()

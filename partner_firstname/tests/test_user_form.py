@@ -3,8 +3,9 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 from odoo.tests.common import Form, TransactionCase
 
+from odoo.addons.base.tests.test_form_create import TestFormCreate
 
-class UserOnchangeCase(TransactionCase):
+class UserOnchangeCase(TestFormCreate):
     def test_create_from_form_only_firstname(self):
         """In a new users form, a user set only the firstname."""
         login = "Zoë"
@@ -46,6 +47,21 @@ class UserOnchangeCase(TransactionCase):
         self.assertEqual(user_form.lastname, lastname)
         self.assertEqual(user_form.firstname, firstname)
         self.assertEqual(user_form.name, " ".join((firstname, lastname)))
+
+    def test_create_res_users(self):
+        firstname = "Fïrst"
+        lastname = "Läst"
+        
+        user_form = self.get_clean_user_form()
+        user_form.login = 'a user login'
+
+        # Changes firstname, which triggers compute
+        user_form.firstname = firstname
+
+        # Changes lastname, which triggers compute
+        user_form.lastname = lastname
+
+        user_form.save()
 
     def get_clean_user_form(self):
         """Get form without pseudo_fields.
