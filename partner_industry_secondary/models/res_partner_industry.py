@@ -22,7 +22,7 @@ class ResPartnerIndustry(models.Model):
     child_ids = fields.One2many(
         comodel_name="res.partner.industry", inverse_name="parent_id", string="Children"
     )
-    parent_path = fields.Char(index=True, unaccent=False)
+    parent_path = fields.Char(index=True)
 
     @api.depends("name", "parent_id", "parent_id.display_name")
     def _compute_display_name(self):
