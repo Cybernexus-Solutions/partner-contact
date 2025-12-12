@@ -16,7 +16,7 @@ class TestResPartnerIndustry(common.TransactionCase):
         cls.industry_child = cls.industry_model.create(
             {"name": "Test child", "parent_id": cls.industry_main.id}
         )
-        cls.env.user.group_ids = [
+        cls.env.user.groups_id = [
             (
                 4,
                 cls.env.ref(
@@ -27,8 +27,6 @@ class TestResPartnerIndustry(common.TransactionCase):
         cls.partner = cls.env["res.partner"].create({"name": "Test partner"})
 
     def test_00_check_industries(self):
-        """Verifies that a partner cannot have the same industry set as both
-        main and secondary."""
         with self.assertRaises(ValidationError):
             self.env["res.partner"].create(
                 {
@@ -39,29 +37,21 @@ class TestResPartnerIndustry(common.TransactionCase):
             )
 
     def test_01_check_copy(self):
-        """Verifies that when duplicating an industry,
-        a new name is automatically assigned."""
         industry_copy = self.industry_child.copy()
         self.assertEqual(industry_copy.name, "Test child 2")
 
     def test_02_check_uniq_name(self):
-        """Ensures that two industries with the same name
-        and parent cannot be created."""
         with self.assertRaises(ValidationError):
             self.industry_model.create({"name": "Test"})
 
     def test_03_check_recursion(self):
-        """Checks that a recursive hierarchy among industries is not allowed."""
-        with self.assertRaisesRegex(UserError, "Recursion Detected."):
+        with self.assertRaises(UserError):
             self.industry_main.parent_id = self.industry_child.id
 
     def test_04_name(self):
-        """Verifies that the 'display_name' field correctly shows the hierarchy."""
         self.assertEqual(self.industry_child.display_name, "Test / Test child")
 
     def test_05_check_partner_industries(self):
-        """Verifies that a partner cannot have the same industry set as both main
-        and secondary."""
         main = self.industry_main
         both = self.industry_main | self.industry_child
         with self.assertRaises(ValidationError):
@@ -70,7 +60,5 @@ class TestResPartnerIndustry(common.TransactionCase):
             )
 
     def test_06_check_show_partner_industry_for_person(self):
-        """Verifies that the system correctly computes whether to show industries
-        for individuals, based on user group."""
         self.partner._compute_show_partner_industry_for_person()
         self.assertEqual(self.partner.show_partner_industry_for_person, True)

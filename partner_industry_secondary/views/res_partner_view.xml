@@ -9,45 +9,34 @@
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
             <field name="industry_id" position="after">
+                <field name="show_partner_industry_for_person" invisible="1" />
                 <field
                     name="secondary_industry_ids"
                     widget="many2many_tags"
-                    invisible="not is_company and not show_partner_industry_for_person"
+                    invisible="is_company == False and show_partner_industry_for_person == False"
                 />
             </field>
             <field name="industry_id" position="attributes">
                 <attribute
                     name="invisible"
-                >not is_company and not show_partner_industry_for_person</attribute>
+                >is_company == False and show_partner_industry_for_person == False</attribute>
             </field>
             <xpath
-                expr="//field[@name='child_ids']/form//div[@invisible]"
+                expr="//field[@name='child_ids']/form//field[@name='function']"
                 position="after"
             >
-                <div
-                    invisible="not is_company and not show_partner_industry_for_person"
-                    class="d-flex align-items-baseline"
-                >
-                    <i
-                        class="fa fa-fw me-1 fa-industry text-primary"
-                        title="Main Industry"
-                    />
-                    <field
-                        name="industry_id"
-                        placeholder="Sector"
-                        options='{"no_open": True}'
-                    />
-                </div>
-                <div
-                    invisible="not is_company and not show_partner_industry_for_person"
-                    class="d-flex align-items-baseline"
-                >
-                    <i
-                        class="fa fa-fw me-1 fa-industry text-primary"
-                        title="Secondary Industries"
-                    />
-                    <field name="secondary_industry_ids" widget="many2many_tags" />
-                </div>
+                <field name="show_partner_industry_for_person" invisible="1" />
+                <field
+                    name="industry_id"
+                    placeholder="Sector"
+                    options='{"no_open": True}'
+                    invisible="is_company == False and show_partner_industry_for_person == False"
+                />
+                <field
+                    name="secondary_industry_ids"
+                    widget="many2many_tags"
+                    invisible="is_company == False and show_partner_industry_for_person == False"
+                />
             </xpath>
         </field>
     </record>
@@ -59,8 +48,9 @@
             <field name="email" position="after">
                 <field
                     name="industry_id"
-                    invisible="not is_company and not show_partner_industry_for_person"
+                    invisible="is_company == False and show_partner_industry_for_person == False"
                 />
+                <field name="show_partner_industry_for_person" column_invisible="1" />
             </field>
         </field>
     </record>
